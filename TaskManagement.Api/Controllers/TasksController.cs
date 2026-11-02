@@ -34,4 +34,37 @@ public class TasksController : ControllerBase
 
         return Created($"/api/tasks/{task.Id}", task);
     }
+    [HttpPut("{id}")]
+public IActionResult UpdateTask(int id, [FromBody] TaskItem updatedTask)
+{
+    var task = tasks.FirstOrDefault(t => t.Id == id);
+
+    if (task == null)
+    {
+        return NotFound("Task not found.");
+    }
+
+    if (string.IsNullOrWhiteSpace(updatedTask.Title))
+    {
+        return BadRequest("Task title is required.");
+    }
+
+    task.Title = updatedTask.Title;
+    task.Completed = updatedTask.Completed;
+
+    return Ok(task);
+}[HttpDelete("{id}")]
+public IActionResult DeleteTask(int id)
+{
+    var task = tasks.FirstOrDefault(t => t.Id == id);
+
+    if (task == null)
+    {
+        return NotFound("Task not found.");
+    }
+
+    tasks.Remove(task);
+
+    return NoContent();
+}
 }
